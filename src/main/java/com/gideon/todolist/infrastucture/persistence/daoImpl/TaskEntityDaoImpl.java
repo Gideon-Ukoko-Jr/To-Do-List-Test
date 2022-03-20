@@ -24,7 +24,7 @@ public class TaskEntityDaoImpl implements TaskEntityDao {
 
     @Override
     public TaskEntity getRecordById(Long aLong) throws RuntimeException {
-        return taskRepository.findById(aLong).orElseThrow(() -> new RuntimeException("Not Found. FixtureEntity with id: "+aLong ));
+        return taskRepository.findById(aLong).orElseThrow(() -> new RuntimeException("Not Found. TaskEntity with id: "+aLong ));
     }
 
     @Override
