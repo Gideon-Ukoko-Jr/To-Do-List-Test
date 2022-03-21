@@ -13,10 +13,10 @@ import javax.validation.constraints.Email;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_table")
+@Table(name = "app_user")
 public class UserEntity extends AbstractBaseEntity<Long>{
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Email
@@ -25,8 +25,6 @@ public class UserEntity extends AbstractBaseEntity<Long>{
 
     @Column(nullable = false)
     private String password;
-
-    private String role;
 
 //    private Instant created;
 //

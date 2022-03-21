@@ -30,7 +30,6 @@ public class RegistrationUseCaseImpl implements RegistrationUseCase {
         user.setUsername(registrationRequest.getUsername());
         user.setPassword(encodePassword(registrationRequest.getPassword()));
         user.setEmail(registrationRequest.getEmail());
-        user.setRole("USER");
 
         userEntityDao.saveRecord(user);
 
