@@ -30,4 +30,14 @@ public class UserEntityDaoImpl implements UserEntityDao {
     public UserEntity saveRecord(UserEntity record) {
         return userRepository.save(record);
     }
+
+    @Override
+    public boolean existByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }

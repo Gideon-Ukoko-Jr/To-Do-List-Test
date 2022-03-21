@@ -5,6 +5,8 @@ import com.gideon.todolist.domain.entities.UserEntity;
 import com.gideon.todolist.events.RegistrationCompleteEvent;
 import com.gideon.todolist.usecase.RegistrationUseCase;
 import com.gideon.todolist.usecase.data.requests.RegistrationRequest;
+import com.gideon.todolist.usecase.exceptions.BadRequestException;
+import com.gideon.todolist.utils.EmailUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -27,6 +29,19 @@ public class RegistrationUseCaseImpl implements RegistrationUseCase {
     public void signUp(RegistrationRequest registrationRequest) {
 
         UserEntity user = new UserEntity();
+
+        if (userEntityDao.existByUsername(registrationRequest.getUsername())){
+            throw new BadRequestException("Username already in use");
+        }
+
+        if (userEntityDao.existByEmail(registrationRequest.getEmail())){
+            throw new BadRequestException("Username already in use");
+        }
+
+        if (!EmailUtils.isValid(registrationRequest.getEmail())){
+            throw new BadRequestException("Invalid email");
+        }
+
         user.setUsername(registrationRequest.getUsername());
         user.setPassword(encodePassword(registrationRequest.getPassword()));
         user.setEmail(registrationRequest.getEmail());
