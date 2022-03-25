@@ -96,7 +96,12 @@ public class TaskUseCaseImpl implements TaskUseCase {
 
 //        List<TaskEntity> taskEntities = taskEntityDao.getTasks();
 //        for (TaskEntity task : taskEntities){
-//            if (LocalDate.now().isAfter(task.getDueDate())){
+//
+//            String dateRightNow = String.valueOf(LocalDate.now());
+//            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+//            LocalDate formattedDateRightNow = LocalDate.parse(dateRightNow, formatter);
+//
+//            if (formattedDateRightNow.isAfter(task.getDueDate())){
 //                task.setOverdue(true);
 //            }
 //        }
