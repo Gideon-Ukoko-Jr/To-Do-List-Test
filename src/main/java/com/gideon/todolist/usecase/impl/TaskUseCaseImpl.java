@@ -84,27 +84,27 @@ public class TaskUseCaseImpl implements TaskUseCase {
 
     @Override
     public void setTasksAsOverdue() {
-        List<TaskEntity> tasks = taskEntityDao.getOverdueTasks();
-        if (tasks.isEmpty()){
-            return;
-        }
-        log.info("Tasks that are overdue - {}", tasks.size());
-
-        for (TaskEntity task : tasks){
-            task.setOverdue(true);
-        }
-
-//        List<TaskEntity> taskEntities = taskEntityDao.getTasks();
-//        for (TaskEntity task : taskEntities){
-//
-//            String dateRightNow = String.valueOf(LocalDate.now());
-//            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
-//            LocalDate formattedDateRightNow = LocalDate.parse(dateRightNow, formatter);
-//
-//            if (formattedDateRightNow.isAfter(task.getDueDate())){
-//                task.setOverdue(true);
-//            }
+//        List<TaskEntity> tasks = taskEntityDao.getOverdueTasks();
+//        if (tasks.isEmpty()){
+//            return;
 //        }
+//        log.info("Tasks that are overdue - {}", tasks.size());
+//
+//        for (TaskEntity task : tasks){
+//            task.setOverdue(true);
+//        }
+
+        List<TaskEntity> taskEntities = taskEntityDao.getTasks();
+        for (TaskEntity task : taskEntities){
+
+            String dateRightNow = String.valueOf(LocalDate.now());
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+            LocalDate formattedDateRightNow = LocalDate.parse(dateRightNow, formatter);
+
+            if (formattedDateRightNow.isAfter(task.getDueDate())){
+                task.setOverdue(true);
+            }
+        }
     }
 
     public GetTaskResponse fromTaskEntityToGetTaskResponse(TaskEntity taskEntity){
