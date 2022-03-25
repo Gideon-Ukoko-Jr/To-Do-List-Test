@@ -93,6 +93,13 @@ public class TaskUseCaseImpl implements TaskUseCase {
         for (TaskEntity task : tasks){
             task.setOverdue(true);
         }
+
+//        List<TaskEntity> taskEntities = taskEntityDao.getTasks();
+//        for (TaskEntity task : taskEntities){
+//            if (LocalDate.now().isAfter(task.getDueDate())){
+//                task.setOverdue(true);
+//            }
+//        }
     }
 
     public GetTaskResponse fromTaskEntityToGetTaskResponse(TaskEntity taskEntity){
