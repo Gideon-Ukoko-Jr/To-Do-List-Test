@@ -11,4 +11,6 @@ public class TaskCreationRequest {
 
     private String task;
     private LocalDate dueDate;
+    private String username;
+
 }

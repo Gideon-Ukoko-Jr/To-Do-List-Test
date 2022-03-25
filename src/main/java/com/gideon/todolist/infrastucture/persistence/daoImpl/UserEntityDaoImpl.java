@@ -32,6 +32,12 @@ public class UserEntityDaoImpl implements UserEntityDao {
     }
 
     @Override
+    public Optional<UserEntity> findUserByUsername(String username) {
+//        return userRepository.getUserEntityByUsername(username);
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
     public boolean existByUsername(String username) {
         return userRepository.existsByUsername(username);
     }

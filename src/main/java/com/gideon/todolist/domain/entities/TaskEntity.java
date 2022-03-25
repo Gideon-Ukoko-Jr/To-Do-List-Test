@@ -3,9 +3,7 @@ package com.gideon.todolist.domain.entities;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -25,4 +23,10 @@ public class TaskEntity extends AbstractBaseEntity<Long>{
     @Column(nullable = false)
     private boolean done = false;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(nullable = false, name = "app_user_id")
+    private UserEntity user;
+
+    @Column(nullable = false)
+    private boolean overdue = false;
 }

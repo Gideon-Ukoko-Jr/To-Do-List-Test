@@ -1,5 +1,6 @@
 package com.gideon.todolist.domain.entities;
 
+import com.gideon.todolist.domain.enums.RecordStatusConstant;
 import lombok.Data;
 import lombok.ToString;
 
@@ -25,6 +26,10 @@ public abstract class AbstractBaseEntity<T extends Serializable> implements Seri
 
     @Column(nullable = false)
     private LocalDateTime dateModified;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RecordStatusConstant recordStatus = RecordStatusConstant.ACTIVE;
 
     @Override
     public boolean equals(Object o) {

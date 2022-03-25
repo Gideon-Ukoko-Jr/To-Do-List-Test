@@ -16,7 +16,7 @@ import java.util.List;
 
 @Api(tags = "Task Endpoints", description = "Handles task records")
 @RestController
-@RequestMapping(value = "/api/v1/tasks/")
+@RequestMapping(value = "/api/v1/tasks")
 public class TaskController {
 
     TaskUseCase taskUseCase;
@@ -37,5 +37,12 @@ public class TaskController {
     public ResponseEntity<List<GetTaskResponse>> getTasks(){
         List<GetTaskResponse> taskResponses = taskUseCase.getTasks();
         return new ResponseEntity<>(taskResponses, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Gets Task by Id")
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<GetTaskResponse> getTaskById(@PathVariable Long id){
+        GetTaskResponse response = taskUseCase.getTaskById(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

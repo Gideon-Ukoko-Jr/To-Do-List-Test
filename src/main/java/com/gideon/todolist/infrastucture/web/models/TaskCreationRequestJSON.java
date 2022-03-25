@@ -24,6 +24,11 @@ public class TaskCreationRequestJSON {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private String dueDate;
 
+    @ApiModelProperty(notes = "Username of task creator")
+    @NotEmpty
+    @NotNull
+    private String username;
+
 
     public TaskCreationRequest toRequest(){
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
@@ -33,11 +38,13 @@ public class TaskCreationRequestJSON {
             return TaskCreationRequest.builder()
                     .task(task)
                     .dueDate(dDate)
+                    .username(username)
                     .build();
         }
 
         return TaskCreationRequest.builder()
                 .task(task)
+                .username(username)
                 .build();
     }
 }

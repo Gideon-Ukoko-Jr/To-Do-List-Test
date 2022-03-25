@@ -4,6 +4,7 @@ import com.gideon.todolist.infrastucture.web.models.LoginRequestJSON;
 import com.gideon.todolist.infrastucture.web.models.RegistrationRequestJSON;
 import com.gideon.todolist.usecase.LoginUseCase;
 import com.gideon.todolist.usecase.RegistrationUseCase;
+import com.gideon.todolist.usecase.data.responses.AuthenticationResponse;
 import io.swagger.annotations.Api;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestJSON requestJSON){
-//        authService.login(requestJSON.toRequest());
-        loginUseCase.login(requestJSON.toRequest());
-        return new ResponseEntity<>("User Login Successful", HttpStatus.OK);
+    public AuthenticationResponse login(@RequestBody LoginRequestJSON requestJSON){
+        return loginUseCase.login(requestJSON.toRequest());
     }
 }

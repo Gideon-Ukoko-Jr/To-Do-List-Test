@@ -41,4 +41,9 @@ public class TaskEntityDaoImpl implements TaskEntityDao {
     public long getNumberOfTasks() {
         return taskRepository.count();
     }
+
+    @Override
+    public List<TaskEntity> getOverdueTasks() {
+        return taskRepository.getOverdueTasks();
+    }
 }

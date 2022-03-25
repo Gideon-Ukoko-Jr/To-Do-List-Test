@@ -10,4 +10,7 @@ public interface TaskUseCase {
 
     TaskModel createTask(TaskCreationRequest request);
     List<GetTaskResponse> getTasks();
+    GetTaskResponse getTaskById(long id);
+
+    void setTasksAsOverdue();
 }

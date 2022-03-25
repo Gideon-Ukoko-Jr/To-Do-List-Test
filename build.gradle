@@ -30,6 +30,8 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.5'
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'org.apache.commons:commons-lang3'
+    implementation 'org.mapstruct:mapstruct:1.5.0.RC1'
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:4.33.0'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'

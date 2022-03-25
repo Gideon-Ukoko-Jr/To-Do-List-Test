@@ -1,5 +1,6 @@
 package com.gideon.todolist.infrastucture.web.security;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import javax.inject.Named;
 
 @EnableWebSecurity
 @Named
+@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -40,8 +42,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**")
                 .permitAll()
+                .antMatchers("/v2/api-docs",
+                        "/*",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/swagger-ui/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**")
+                .permitAll()
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+//                .and()
+//                .exceptionHandling().accessDeniedPage("")
+        ;
 
         httpSecurity.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
