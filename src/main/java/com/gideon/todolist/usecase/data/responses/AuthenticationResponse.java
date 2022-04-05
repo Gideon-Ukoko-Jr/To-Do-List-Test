@@ -1,5 +1,6 @@
 package com.gideon.todolist.usecase.data.responses;
 
+import com.gideon.todolist.usecase.models.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class AuthenticationResponse {
 
-    private String authenticationToken;
-    private String username;
+    long id;
+    String username;
+    String email;
+    String type;
+    String token;
 
 }

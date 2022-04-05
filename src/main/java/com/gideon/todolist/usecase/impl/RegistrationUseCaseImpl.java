@@ -7,23 +7,20 @@ import com.gideon.todolist.usecase.RegistrationUseCase;
 import com.gideon.todolist.usecase.data.requests.RegistrationRequest;
 import com.gideon.todolist.usecase.exceptions.BadRequestException;
 import com.gideon.todolist.utils.EmailUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.inject.Named;
 
 @Named
+@AllArgsConstructor
 public class RegistrationUseCaseImpl implements RegistrationUseCase {
 
     private final UserEntityDao userEntityDao;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher publisher;
 
-    public RegistrationUseCaseImpl(UserEntityDao userEntityDao, PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher) {
-        this.userEntityDao = userEntityDao;
-        this.passwordEncoder = passwordEncoder;
-        this.publisher = publisher;
-    }
 
     @Override
     public void signUp(RegistrationRequest registrationRequest) {
@@ -43,15 +40,11 @@ public class RegistrationUseCaseImpl implements RegistrationUseCase {
         }
 
         user.setUsername(registrationRequest.getUsername());
-        user.setPassword(encodePassword(registrationRequest.getPassword()));
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setEmail(registrationRequest.getEmail());
 
         userEntityDao.saveRecord(user);
 
-        publisher.publishEvent(new RegistrationCompleteEvent(user, "url"));
-    }
-
-    private String encodePassword(String password){
-        return passwordEncoder.encode(password);
+//        publisher.publishEvent(new RegistrationCompleteEvent(user, "url"));
     }
 }
