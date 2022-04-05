@@ -9,6 +9,7 @@ import com.gideon.todolist.usecase.TaskUseCase;
 import com.gideon.todolist.usecase.data.requests.TaskCreationRequest;
 import com.gideon.todolist.usecase.data.responses.GetTaskResponse;
 import com.gideon.todolist.usecase.exceptions.BadRequestException;
+import com.gideon.todolist.usecase.exceptions.TODOException;
 import com.gideon.todolist.usecase.models.TaskModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +83,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
         TaskEntity taskEntity = taskEntityDao.getRecordById(id);
 
         if (taskEntity.isOverdue()){
-            // Throw a Flag to signify it's overdue
+            throw new TODOException("Task is overdue -> Task Name : " + taskEntity.getTaskName() + " Task Due Date : " + taskEntity.getDueDate());
         }
 
         return fromTaskEntityToGetTaskResponse(taskEntity);

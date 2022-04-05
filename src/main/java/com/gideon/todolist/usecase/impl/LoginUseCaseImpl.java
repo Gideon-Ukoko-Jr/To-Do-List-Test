@@ -26,9 +26,6 @@ import javax.inject.Named;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class LoginUseCaseImpl implements LoginUseCase {
 
-//    private final AuthenticationManager authenticationManager;
-//    private final JwtProvider tokenProvider;
-
     AuthenticationManager authenticationManager;
     UserEntityDao userEntityDao;
     PasswordEncoder passwordEncoder;
@@ -37,10 +34,6 @@ public class LoginUseCaseImpl implements LoginUseCase {
 
     @Override
     public AuthenticationResponse login(LoginRequest loginRequest) {
-//
-//        String authenticationToken = tokenProvider.generateToken(authentication);
-//
-//        return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
 
         String username = loginRequest.getUsername();
         UserEntity user = userEntityDao.findUserByUsername(username).orElseThrow(() -> new BadRequestException("Invalid email or password."));
