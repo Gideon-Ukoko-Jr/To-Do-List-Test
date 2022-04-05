@@ -12,6 +12,9 @@ import com.gideon.todolist.usecase.exceptions.BadRequestException;
 import com.gideon.todolist.usecase.models.TaskModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Named;
 import java.time.LocalDate;
@@ -31,9 +34,15 @@ public class TaskUseCaseImpl implements TaskUseCase {
     public TaskModel createTask(TaskCreationRequest request) {
         String task = request.getTask();
         LocalDate dueDate = request.getDueDate();
-        String username = request.getUsername();
 
-        UserEntity user = userEntityDao.findUserByUsername(username).orElseThrow(() -> new BadRequestException("User doesn't in the system"));
+        String currentUserName = null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            currentUserName = authentication.getName();
+        }
+
+        UserEntity user = userEntityDao.findUserByUsername(currentUserName).orElseThrow(() -> new BadRequestException("User doesn't in the system"));
 
         if(request.getDueDate() == null){
             dueDate = null;
@@ -55,7 +64,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
         TaskModel taskResponse = TaskModel.builder()
                 .id(id)
                 .task(task)
-                .creator(username)
+                .creator(currentUserName)
                 .build();
         if(dueDate != null){
             taskResponse.setDueDate(dueDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
