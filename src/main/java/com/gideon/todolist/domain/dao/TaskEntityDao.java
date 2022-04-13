@@ -11,4 +11,6 @@ public interface TaskEntityDao extends CrudDao<TaskEntity, Long>{
     long getNumberOfTasks();
 
     List<TaskEntity> getOverdueTasks();
+
+    List<TaskEntity> getAllTasksByUser(String username);
 }

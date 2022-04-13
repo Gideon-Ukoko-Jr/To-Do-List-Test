@@ -3,8 +3,11 @@ package com.gideon.todolist.infrastructure.web.controllers;
 
 import com.gideon.todolist.infrastructure.web.models.ApiResponseJSON;
 import com.gideon.todolist.infrastructure.web.models.TaskCreationRequestJSON;
+import com.gideon.todolist.infrastructure.web.models.TaskUpdateRequestJSON;
 import com.gideon.todolist.usecase.TaskUseCase;
+import com.gideon.todolist.usecase.data.requests.TaskUpdateRequest;
 import com.gideon.todolist.usecase.data.responses.GetTaskResponse;
+import com.gideon.todolist.usecase.data.responses.TaskUpdateResponse;
 import com.gideon.todolist.usecase.models.TaskModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,7 +28,7 @@ public class TaskController {
         this.taskUseCase = taskUseCase;
     }
 
-    @ApiOperation(value = "Creates Fixtures")
+    @ApiOperation(value = "Creates Task")
     @PostMapping(value = "")
     public ResponseEntity<ApiResponseJSON<TaskModel>> createTask(@RequestBody TaskCreationRequestJSON requestJSON){
         TaskModel taskModel = taskUseCase.createTask(requestJSON.toRequest());
@@ -44,5 +47,13 @@ public class TaskController {
     public ResponseEntity<GetTaskResponse> getTaskById(@PathVariable Long id){
         GetTaskResponse response = taskUseCase.getTaskById(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Updates Task as done")
+    @PostMapping(value = "/{taskId}/update-task-status")
+    public ResponseEntity<ApiResponseJSON<TaskUpdateResponse>> updateTaskAsDone(@PathVariable("taskId") Long id,
+                                                               @RequestBody TaskUpdateRequestJSON requestJSON){
+        TaskUpdateResponse response = taskUseCase.markTaskAsDoneOrUndone(id, requestJSON.toRequest());
+        return new ResponseEntity<>(new ApiResponseJSON<>("Updated As Done Successfully", response), HttpStatus.OK);
     }
 }

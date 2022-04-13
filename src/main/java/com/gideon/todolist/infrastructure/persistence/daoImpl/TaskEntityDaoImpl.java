@@ -5,6 +5,7 @@ import com.gideon.todolist.domain.entities.TaskEntity;
 import com.gideon.todolist.infrastructure.persistence.repository.TaskRepository;
 
 import javax.inject.Named;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +45,11 @@ public class TaskEntityDaoImpl implements TaskEntityDao {
 
     @Override
     public List<TaskEntity> getOverdueTasks() {
-        return taskRepository.getOverdueTasks();
+        return taskRepository.getOverdueTasks(LocalDate.now());
+    }
+
+    @Override
+    public List<TaskEntity> getAllTasksByUser(String username) {
+        return taskRepository.getAllTasksByUser(username);
     }
 }

@@ -7,7 +7,9 @@ import com.gideon.todolist.domain.entities.UserEntity;
 import com.gideon.todolist.infrastructure.web.security.services.UserDetailsImpl;
 import com.gideon.todolist.usecase.TaskUseCase;
 import com.gideon.todolist.usecase.data.requests.TaskCreationRequest;
+import com.gideon.todolist.usecase.data.requests.TaskUpdateRequest;
 import com.gideon.todolist.usecase.data.responses.GetTaskResponse;
+import com.gideon.todolist.usecase.data.responses.TaskUpdateResponse;
 import com.gideon.todolist.usecase.exceptions.BadRequestException;
 import com.gideon.todolist.usecase.exceptions.TODOException;
 import com.gideon.todolist.usecase.models.TaskModel;
@@ -19,8 +21,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Named;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Named
@@ -90,6 +94,64 @@ public class TaskUseCaseImpl implements TaskUseCase {
     }
 
     @Override
+    public TaskUpdateResponse markTaskAsDoneOrUndone(long taskId, TaskUpdateRequest request) {
+        TaskEntity taskEntity = taskEntityDao.getRecordById(taskId);
+
+        String currentUserName = null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            currentUserName = authentication.getName();
+        }
+
+        if (!Objects.equals(taskEntity.getUser().getUsername(), currentUserName)){
+            throw new BadRequestException("You are not authorized to update task");
+        }
+
+        String doneUpdate = request.getDone();
+
+        boolean done = taskEntity.isDone();
+
+        if (doneUpdate.equals("yes")){
+            done = true;
+        }
+
+        if (doneUpdate.equals("no")){
+            done = false;
+        }
+
+        taskEntity.setDone(done);
+
+        taskEntityDao.saveRecord(taskEntity);
+
+        LocalDate dueDate = taskEntity.getDueDate();
+        String task = taskEntity.getTaskName();
+        LocalDateTime dateTimeModified = taskEntity.getDateModified();
+
+        return TaskUpdateResponse.builder()
+                .task(task)
+                .dueDate(dueDate)
+                .done(done)
+                .dateTimeUpdated(dateTimeModified)
+                .build();
+    }
+
+    @Override
+    public List<GetTaskResponse> getTasksForUser() {
+
+        String currentUserName = null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            currentUserName = authentication.getName();
+        }
+
+        UserEntity user = userEntityDao.findUserByUsername(currentUserName).orElseThrow(() -> new BadRequestException("User doesn't exist in the system"));
+
+        return taskEntityDao.getAllTasksByUser(user.getUsername()).stream().map(this::fromTaskEntityToGetTaskResponse).collect(Collectors.toList());
+    }
+
+    @Override
     public void setTasksAsOverdue() {
         List<TaskEntity> tasks = taskEntityDao.getOverdueTasks();
         if (tasks.isEmpty()){
@@ -99,19 +161,9 @@ public class TaskUseCaseImpl implements TaskUseCase {
 
         for (TaskEntity task : tasks){
             task.setOverdue(true);
+            taskEntityDao.saveRecord(task);
         }
 
-//        List<TaskEntity> taskEntities = taskEntityDao.getTasks();
-//        for (TaskEntity task : taskEntities){
-//
-//            String dateRightNow = String.valueOf(LocalDate.now());
-//            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
-//            LocalDate formattedDateRightNow = LocalDate.parse(dateRightNow, formatter);
-//
-//            if (formattedDateRightNow.isAfter(task.getDueDate())){
-//                task.setOverdue(true);
-//            }
-//        }
     }
 
     public GetTaskResponse fromTaskEntityToGetTaskResponse(TaskEntity taskEntity){
