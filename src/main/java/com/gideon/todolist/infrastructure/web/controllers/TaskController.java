@@ -39,6 +39,7 @@ public class TaskController {
     @GetMapping(value = "")
     public ResponseEntity<List<GetTaskResponse>> getTasks(){
         List<GetTaskResponse> taskResponses = taskUseCase.getTasks();
+//        List<GetTaskResponse> taskResponses = taskUseCase.getTasksForUser();
         return new ResponseEntity<>(taskResponses, HttpStatus.OK);
     }
 
