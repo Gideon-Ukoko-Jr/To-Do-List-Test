@@ -23,7 +23,7 @@ public class TaskEntity extends AbstractBaseEntity<Long>{
     @Column(nullable = false)
     private boolean done = false;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(nullable = false, name = "app_user_id")
     private UserEntity user;
 

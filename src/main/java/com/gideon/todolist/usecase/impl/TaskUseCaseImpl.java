@@ -5,6 +5,7 @@ import com.gideon.todolist.domain.dao.UserEntityDao;
 import com.gideon.todolist.domain.entities.TaskEntity;
 import com.gideon.todolist.domain.entities.UserEntity;
 import com.gideon.todolist.infrastructure.web.security.services.UserDetailsImpl;
+import com.gideon.todolist.service.EmailSenderService;
 import com.gideon.todolist.usecase.TaskUseCase;
 import com.gideon.todolist.usecase.data.requests.TaskCreationRequest;
 import com.gideon.todolist.usecase.data.requests.TaskUpdateRequest;
@@ -20,6 +21,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Named;
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +37,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
 
     private final TaskEntityDao taskEntityDao;
     private final UserEntityDao userEntityDao;
+    private EmailSenderService emailSenderService;
 
     @Override
     public TaskModel createTask(TaskCreationRequest request) {
@@ -164,6 +168,24 @@ public class TaskUseCaseImpl implements TaskUseCase {
             taskEntityDao.saveRecord(task);
         }
 
+    }
+
+    @Override
+    public void sendAlmostDueEmail() throws MessagingException, UnsupportedEncodingException {
+
+        String subject = "Task Due In Ten Minutes";
+        List<TaskEntity> tasks = taskEntityDao.getTasks();
+        if (tasks.isEmpty()){
+            return;
+        }
+
+        for (TaskEntity task : tasks){
+            if (task.getDueDate().getMonth() == LocalDate.now().getMonth()){
+                if (task.getDueDate().getDayOfMonth() == LocalDate.now().getDayOfMonth() + 1){
+                    emailSenderService.sendMail(task.getUser().getUsername(), task.getUser().getEmail(), subject, task.getTaskName());
+                }
+            }
+        }
     }
 
     public GetTaskResponse fromTaskEntityToGetTaskResponse(TaskEntity taskEntity){

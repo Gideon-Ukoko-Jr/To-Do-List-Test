@@ -18,6 +18,9 @@ public class JwtUtils {
 	@Value("${gideon.app.jwtSecret}")
 	private String jwtSecret;
 
+	private static final long EXPIRATION_DURATION = 24 * 60 * 60 * 60; //24H
+	private String secretKey = "gideonSecretKey";
+
 	@Value("${gideon.app.jwtExpirationMs}")
 	private int jwtExpirationMs;
 
@@ -28,8 +31,10 @@ public class JwtUtils {
 		return Jwts.builder()
 				.setSubject((userPrincipal.getUsername()))
 				.setIssuedAt(new Date())
-				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-				.signWith(SignatureAlgorithm.HS512, jwtSecret)
+//				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_DURATION))
+//				.signWith(SignatureAlgorithm.HS512, jwtSecret)
+				.signWith(SignatureAlgorithm.HS512, secretKey)
 				.compact();
 	}
 

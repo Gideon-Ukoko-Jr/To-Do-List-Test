@@ -6,6 +6,8 @@ import com.gideon.todolist.usecase.data.responses.GetTaskResponse;
 import com.gideon.todolist.usecase.data.responses.TaskUpdateResponse;
 import com.gideon.todolist.usecase.models.TaskModel;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface TaskUseCase {
@@ -19,4 +21,6 @@ public interface TaskUseCase {
     List<GetTaskResponse> getTasksForUser();
 
     void setTasksAsOverdue();
+
+    void sendAlmostDueEmail() throws MessagingException, UnsupportedEncodingException;
 }
