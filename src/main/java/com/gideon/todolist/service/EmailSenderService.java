@@ -26,13 +26,12 @@ import java.util.Properties;
 @Slf4j
 public class EmailSenderService {
 
-    private static final String TEMPLATE_NAME = "almost-due-email-template";
 
     private final Environment environment;
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
 
-    public void sendMail(String name, String sendToEmail, String subject, String task) throws MessagingException, UnsupportedEncodingException {
+    public void sendMail(String name, String sendToEmail, String subject, String task, String TEMPLATE_NAME) throws MessagingException, UnsupportedEncodingException {
 
         Properties properties = new Properties();
 //        properties.put("mail.smtp.starttls.enable", "true");

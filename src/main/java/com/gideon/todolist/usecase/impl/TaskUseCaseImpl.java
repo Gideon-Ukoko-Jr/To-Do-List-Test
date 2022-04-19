@@ -4,7 +4,6 @@ import com.gideon.todolist.domain.dao.TaskEntityDao;
 import com.gideon.todolist.domain.dao.UserEntityDao;
 import com.gideon.todolist.domain.entities.TaskEntity;
 import com.gideon.todolist.domain.entities.UserEntity;
-import com.gideon.todolist.infrastructure.web.security.services.UserDetailsImpl;
 import com.gideon.todolist.service.EmailSenderService;
 import com.gideon.todolist.usecase.TaskUseCase;
 import com.gideon.todolist.usecase.data.requests.TaskCreationRequest;
@@ -38,6 +37,10 @@ public class TaskUseCaseImpl implements TaskUseCase {
     private final TaskEntityDao taskEntityDao;
     private final UserEntityDao userEntityDao;
     private EmailSenderService emailSenderService;
+    private static final String ALMOST_DUE_EMAIL_TEMPLATE_10M = "almost-due-email-template-10M";
+    private static final String OVERDUE_EMAIL_TEMPLATE_10M = "overdue-email-template-10M";
+    private static final String ALMOST_DUE_EMAIL_TEMPLATE_1H = "almost-due-email-template-1H";
+    private static final String OVERDUE_EMAIL_TEMPLATE_1H = "overdue-email-template-1H";
 
     @Override
     public TaskModel createTask(TaskCreationRequest request) {
@@ -171,20 +174,55 @@ public class TaskUseCaseImpl implements TaskUseCase {
     }
 
     @Override
-    public void sendAlmostDueEmail() throws MessagingException, UnsupportedEncodingException {
+    public void sendDueInTenMinutesMail() throws MessagingException, UnsupportedEncodingException {
 
         String subject = "Task Due In Ten Minutes";
-        List<TaskEntity> tasks = taskEntityDao.getTasks();
+        List<TaskEntity> tasks = taskEntityDao.getTasksDueTomorrow();
         if (tasks.isEmpty()){
             return;
         }
 
         for (TaskEntity task : tasks){
-            if (task.getDueDate().getMonth() == LocalDate.now().getMonth()){
-                if (task.getDueDate().getDayOfMonth() == LocalDate.now().getDayOfMonth() + 1){
-                    emailSenderService.sendMail(task.getUser().getUsername(), task.getUser().getEmail(), subject, task.getTaskName());
-                }
-            }
+            emailSenderService.sendMail(task.getUser().getUsername(), task.getUser().getEmail(), subject, task.getTaskName(), ALMOST_DUE_EMAIL_TEMPLATE_10M);
+        }
+    }
+
+    @Override
+    public void sendDueInAnHourMail() throws MessagingException, UnsupportedEncodingException {
+        String subject = "Task Due In An Hour";
+        List<TaskEntity> tasks = taskEntityDao.getTasksDueTomorrow();
+        if (tasks.isEmpty()){
+            return;
+        }
+
+        for (TaskEntity task : tasks){
+            emailSenderService.sendMail(task.getUser().getUsername(), task.getUser().getEmail(), subject, task.getTaskName(), ALMOST_DUE_EMAIL_TEMPLATE_1H);
+        }
+    }
+
+    @Override
+    public void sendOverdueByTenMinutesMail() throws MessagingException, UnsupportedEncodingException {
+        String subject = "Task Overdue By Ten Minutes";
+        List<TaskEntity> tasks = taskEntityDao.getTasksDueToday();
+        if (tasks.isEmpty()){
+            return;
+        }
+
+        for (TaskEntity task : tasks){
+            emailSenderService.sendMail(task.getUser().getUsername(), task.getUser().getEmail(), subject, task.getTaskName(), OVERDUE_EMAIL_TEMPLATE_10M);
+        }
+    }
+
+    @Override
+    public void sendOverdueByAnHourMail() throws MessagingException, UnsupportedEncodingException {
+        String subject = "Task Overdue By An Hour";
+        List<TaskEntity> tasks = taskEntityDao.getTasksDueToday();
+        if (tasks.isEmpty()){
+            return;
+        }
+
+        for (TaskEntity task : tasks){
+            emailSenderService.sendMail(task.getUser().getUsername(), task.getUser().getEmail(), subject, task.getTaskName(), OVERDUE_EMAIL_TEMPLATE_1H);
         }
     }
 

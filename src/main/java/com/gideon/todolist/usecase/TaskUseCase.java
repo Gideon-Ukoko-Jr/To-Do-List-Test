@@ -22,5 +22,8 @@ public interface TaskUseCase {
 
     void setTasksAsOverdue();
 
-    void sendAlmostDueEmail() throws MessagingException, UnsupportedEncodingException;
+    void sendDueInTenMinutesMail() throws MessagingException, UnsupportedEncodingException;
+    void sendDueInAnHourMail() throws MessagingException, UnsupportedEncodingException;
+    void sendOverdueByTenMinutesMail() throws MessagingException, UnsupportedEncodingException;
+    void sendOverdueByAnHourMail() throws MessagingException, UnsupportedEncodingException;
 }
